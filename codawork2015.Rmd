@@ -1,0 +1,163 @@
+---
+title: "Presentation"
+author: "Marc Comas-Cufí"
+date: "13 May 2015"
+output: 
+  html_document: 
+    toc: yes
+---
+
+```{r, include=FALSE}
+library(ggplot2)
+
+library(dplyr)
+
+knitr::opts_chunk$set(comment = " ", echo = FALSE, warning = FALSE)
+rnormmix = function(n, pi= c(1/3, 1/3, 1/3), 
+                    mean = c(-2, 0, 2),
+                    sd = c(1, 1, 1)){
+  df = apply(cbind(mean, sd), 1, function(pars) rnorm(n, mean=pars[1], sd=pars[2]))
+  z = sapply(sample(1:3, size = n, replace = TRUE, prob = pi), function(i) 1:3 == i)
+  df[t(z)]
+}
+dnormmix = function(x, pi= c(1/3, 1/3, 1/3), 
+                    mean = c(-2, 0, 2),
+                    sd = c(1, 1, 1)){
+  df = apply(cbind(pi, mean, sd), 1, function(pars) pars[1] * dnorm(x, mean=pars[2], sd=pars[3]))
+  apply(df, 1, sum)
+}
+cnormmix = function(x, pi= c(1/3, 1/3, 1/3), 
+                    mean = c(-2, 0, 2),
+                    sd = c(1, 1, 1),
+                    class = 1:length(pi)){
+  df = apply(cbind(pi, mean, sd), 1, function(pars) pars[1] * dnorm(x, mean=pars[2], sd=pars[3]))
+  as.factor(class[apply(df, 1, which.max)])
+}
+get_sample = function(seed = 2){
+  set.seed(seed)
+  Pi = c(2/9, 4/9, 3/9)
+  Mean = c(-2, 3.5, 5)
+  Sd = c(0.65,1.2,0.8)
+  df = data.frame('x' = rnormmix(n = 100,  pi = Pi, mean = Mean, sd = Sd))
+  df$f = dnormmix(df$x, pi = Pi, mean = Mean, sd = Sd)
+  df$class = cnormmix(df$x, pi = Pi, mean = Mean, sd = Sd)
+  df$class2 = cnormmix(df$x, pi = Pi, mean = Mean, sd = Sd, class=c(1,2,2))
+  df$f1 = Pi[1] * dnorm(df$x, mean = Mean[1], sd = Sd[1]) / df$f
+  df$f2 = Pi[2] * dnorm(df$x, mean = Mean[2], sd = Sd[2]) / df$f
+  df$f3 = Pi[3] * dnorm(df$x, mean = Mean[3], sd = Sd[3]) / df$f
+  df.dens = data.frame('x' = seq(-5, 10, 0.2))
+  df.dens$f = dnormmix(df.dens$x, pi = Pi, mean = Mean, sd = Sd)
+  df.dens$f1 = Pi[1] * dnorm(df.dens$x, mean = Mean[1], sd = Sd[1])
+  df.dens$f2 = Pi[2] * dnorm(df.dens$x, mean = Mean[2], sd = Sd[2])
+  df.dens$f3 = Pi[3] * dnorm(df.dens$x, mean = Mean[3], sd = Sd[3])
+  list('sample' = df, 'density' = df.dens)
+}
+```
+
+# Presenting the sample
+
+Let's assume we have the following sample $X = \{x_1,\dots,x_{100} \}$:
+
+```{r, fig.width=4, fig.height=3}
+v_xlim = c(-5, 8)
+X = get_sample()
+df = X$sample
+df.dens = X$density
+
+(p1 <- ggplot() + 
+  geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white') +
+  geom_segment(data=df, aes(x=x, xend=x, y=0, yend=0.01), alpha=1) +
+  theme_bw() + xlim(v_xlim) + theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) +
+  ylab(NULL) + xlab('X'))
+```
+
+From the plot, it is natural to think that $X$ consists of two groups: the first formed with the positive values and the second with the negative ones.
+
+```{r, fig.width=4, fig.height=3}
+df$km = ifelse(df$x < 0, '1', '2')
+ggplot() + 
+  geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white') +
+  geom_segment(data=df, aes(x=x, xend=x, y=0, yend=0.01, col=km), alpha=1) +
+  theme_bw() + xlim(v_xlim) + theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) +
+  ylab(NULL) + xlab('X')  + theme(legend.position="none")
+```
+
+# Presenting parametric clustering
+
+The most common approach in model based clustering starts fitting a finite mixture of Gaussian distribution 
+
+```{r, fig.width=4, fig.height=3}
+v_xlim = c(-5, 8)
+(p2 <- p1 + geom_line(data=df.dens, aes(x=x, y=f), size = 1))
+```
+
+and then observations are assigned to the Gaussian distribution they most likely belong to
+
+```{r, fig.width=4, fig.height=3, fig.show='hold'}
+(p3 <- p1 +
+  geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f2), size = 1, col = 'green', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f3), size = 1, col = 'blue', alpha=0.6) +
+  geom_line(data=df.dens, aes(x=x, y=f), size = 1))
+
+(p1c <- ggplot() + 
+  geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white', alpha=0.6) +
+  geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f2), size = 1, col = 'green', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f3), size = 1, col = 'blue', alpha=0.6) + 
+  geom_segment(data=df, aes(x=x, xend=x, y=0, yend=0.01, col=class), alpha=1) + 
+  theme_bw() +  theme(legend.position="none") +xlim(v_xlim) + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL) +  
+   scale_color_manual(values = c("red", "green", "blue")))
+```
+
+As we can see, the notion of clustering changes from the notion we saw in the beginning.
+
+# The entropy criteria
+
+Baudry et al proposed to combine those two components for which after merging the components (amalgamate them) the total Shannon Entropy is maximized.
+
+
+## The confusion measure
+
+\[
+\sum_{i=1}^n  (\hat{\tau}_{i I_a}+\hat{\tau}_{i I_b}) \log(\hat{\tau}_{iI_a} + \hat{\tau}_{i I_b}) - 
+\sum_{i=1}^n \left\{ \hat{\tau}_{i I_a} \log(\hat{\tau}_{i I_a}) + \hat{\tau}_{iI_b} \log(\hat{\tau}_{i I_b})\right\}
+\]
+
+# The missclassification criteria
+
+Hennig proposed to merge those two components for which thr probability of assigning one observation to the other is maximum.
+
+
+## The confusion measure
+
+\[
+\frac{ \sum_{i=1}^n {\hat{\tau}_{i I_a} \mathbb{1}\left( \forall j\; \hat{\tau}_{i I_{b}} \geq \hat{\tau}_{i I_j} \right)}}{\sum_{i=1}^n \hat{\tau}_{i I_a} }
+\]
+
+# Introducing a CoDa approach to previous measures
+
+# A generic formulation
+
+\[
+\frac{\sum_{i=1}^n \omega(\hat{\tau}_{i \mathcal{P}_s}, I_a) \lambda(\hat{\tau}_{i \mathcal{P}_s}, I_a, I_b)}{\sum_{i=1}^n \omega(\hat{\tau}_{i \mathcal{P}_s}, I_a) }
+\]
+
+# Calaix de sastre: extres
+
+```{r, include=FALSE}
+#library(ggtern)
+library(compositions)
+```
+
+```{r, fig.width=4.5, fig.height=4.5, fig.show='hold'}
+plot(df %>% select(f1, f2, f3) %>% acomp, col=df$class)
+plot(scale(df %>% select(f1,f2,f3) %>% acomp) %>% data.frame %>% acomp, col=df$class)
+# ggtern( data = df %>% select(f1, f2, f3, class) ) + geom_point(aes(x=f1, y=f2, z=f3, col=class)) + theme_bw() + scale_colour_discrete(guide=FALSE)
+# 
+# df.cent = scale(df %>% select(f1,f2,f3) %>% acomp) %>% data.frame
+# df.cent$class = df$class
+# ggtern( data = df.cent %>% select(f1, f2, f3, class) ) + geom_point(aes(x=f1, y=f2, z=f3, col=class)) + theme_bw() + scale_colour_discrete(guide=FALSE)
+```
+

@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+*.pdf
+*.log
+*.nav
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.html
+codawork2015-concordance.tex
+codawork2015.tex
