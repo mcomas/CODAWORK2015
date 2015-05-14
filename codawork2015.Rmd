@@ -86,12 +86,16 @@ ggplot() +
 
 The most common approach in model based clustering starts fitting a finite mixture of Gaussian distribution 
 
+\[
+f(x) = \color{black}{\pi_1 f_1(x;\theta_1)} + \color{black}{\pi_2 f_2(x;\theta_2)} + \color{black}{\pi_3 f_3(x;\theta_3)} 
+\]
+
 ```{r, fig.width=4, fig.height=3}
 v_xlim = c(-5, 8)
 (p2 <- p1 + geom_line(data=df.dens, aes(x=x, y=f), size = 1))
 ```
 
-and then observations are assigned to the Gaussian distribution they most likely belong to
+and then observations are assigned to the Gaussian distribution, $f_j(x;\theta_j)$, they most likely belong to
 
 ```{r, fig.width=4, fig.height=3, fig.show='hold'}
 (p3 <- p1 +
@@ -111,7 +115,41 @@ and then observations are assigned to the Gaussian distribution they most likely
    scale_color_manual(values = c("red", "green", "blue")))
 ```
 
-As we can see, the notion of clustering changes from the notion we saw in the beginning.
+As we can see, the notion of clustering changes from the notion we saw in the beginning. We have considered three components
+
+\[
+f(x) = \color{red}{\pi_1 f_1(x;\theta_1)} + \color{green}{\pi_2 f_2(x;\theta_2)} + \color{blue}{\pi_3 f_3(x;\theta_3)} 
+\]
+
+and we have assigned each observation $x_i$ to the component $j$ such that posterior probability
+
+\[
+\tau_j = \frac{\pi_j f_j(x_i;\theta_j)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}
+\]
+
+is maximum, in other words, to the highest component
+
+\[
+\left(\color{red}{\frac{\pi_1 f_1(x_i;\theta_1)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, \color{green}{\frac{\pi_2 f_2(x_i;\theta_2)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, \color{blue}{\frac{\pi_3 f_3(x_i;\theta_3)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}} \right)
+\]
+
+or, in other words, to the highest component
+
+\[
+\left(\color{red}{\pi_1 f_1(x_i;\theta_1)}, \color{green}{\pi_2 f_2(x_i;\theta_2)}, \color{blue}{\pi_3 f_3(x_i;\theta_3)} \right)
+\]
+
+An approach introduced by different authors consist in consisdering the mixture as a mixture of Gaussian mixtures, and classify according to this new mixture. For example, decompose mixture $f$ with the two components
+
+\[
+f(x) = \color{red}{\pi_1 f_1(x;\theta_1)} + \color{green}{ (\pi_2+\pi_3)\left\{ \frac{\pi_2}{\pi_2+\pi_3} f_2(x;\theta_2) + \frac{\pi_3}{\pi_2+\pi_3} f_3(x;\theta_3) \right\}}
+\]
+
+
+
+\[
+\left(\color{red}{\pi_1 f_1(x_i;\theta_1)}, \color{green}{\pi_2 f_2(x_i;\theta_2)}+\color{green}{\pi_3 f_3(x_i;\theta_3)} \right)
+\]
 
 # The entropy criteria
 
