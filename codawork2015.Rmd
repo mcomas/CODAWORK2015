@@ -95,10 +95,10 @@ and then observations are assigned to the Gaussian distribution they most likely
 
 ```{r, fig.width=4, fig.height=3, fig.show='hold'}
 (p3 <- p1 +
+  geom_line(data=df.dens, aes(x=x, y=f), size = 1) +
   geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
   geom_line(data=df.dens, aes(x=x, y=f2), size = 1, col = 'green', alpha=0.6) + 
-  geom_line(data=df.dens, aes(x=x, y=f3), size = 1, col = 'blue', alpha=0.6) +
-  geom_line(data=df.dens, aes(x=x, y=f), size = 1))
+  geom_line(data=df.dens, aes(x=x, y=f3), size = 1, col = 'blue', alpha=0.6))
 
 (p1c <- ggplot() + 
   geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white', alpha=0.6) +
