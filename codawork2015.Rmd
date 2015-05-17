@@ -11,6 +11,7 @@ output:
 library(ggplot2)
 library(mclust)
 library(dplyr)
+library(mixpack)
 
 knitr::opts_chunk$set(comment = " ", echo = FALSE, warning = FALSE)
 rnormmix = function(n, pi= c(1/3, 1/3, 1/3), 
@@ -186,6 +187,80 @@ for(i in 1:mc$G){
   func = function(x) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )
   p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i, alpha=0.6)
 }
+p + theme_bw() +  theme(legend.position="none") + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
+```
+
+```{r}
+hp = get_hierarchical_partition(mc$z, lambda = function(v_tau, a, b) if(which.max(v_tau) == b) 1 else 0, omega = function(v_tau, a) v_tau[a])
+```
+
+```{r, fig.width=8.5, fig.height=3}
+p = ggplot() + 
+  geom_histogram(data=df.d, aes(x=x, y = ..density..), binwidth=0.1, col='black', fill='white', alpha=0.6)
+
+for(i in hp[[7]]){
+  df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
+  func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+}
+
+p + theme_bw() +  theme(legend.position="none") + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
+```
+
+```{r, fig.width=8.5, fig.height=3}
+p = ggplot() + 
+  geom_histogram(data=df.d, aes(x=x, y = ..density..), binwidth=0.1, col='black', fill='white', alpha=0.6)
+
+for(i in hp[[6]]){
+  df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
+  func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+}
+
+p + theme_bw() +  theme(legend.position="none") + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
+```
+
+```{r, fig.width=8.5, fig.height=3}
+p = ggplot() + 
+  geom_histogram(data=df.d, aes(x=x, y = ..density..), binwidth=0.1, col='black', fill='white', alpha=0.6)
+
+for(i in hp[[5]]){
+  df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
+  func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+}
+
+p + theme_bw() +  theme(legend.position="none") + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
+```
+
+```{r, fig.width=8.5, fig.height=3}
+p = ggplot() + 
+  geom_histogram(data=df.d, aes(x=x, y = ..density..), binwidth=0.1, col='black', fill='white', alpha=0.6)
+
+for(i in hp[[4]]){
+  df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
+  func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+}
+
+p + theme_bw() +  theme(legend.position="none") + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
+```
+
+```{r, fig.width=8.5, fig.height=3}
+p = ggplot() + 
+  geom_histogram(data=df.d, aes(x=x, y = ..density..), binwidth=0.1, col='black', fill='white', alpha=0.6)
+
+for(i in hp[[3]]){
+  df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
+  func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+}
+
 p + theme_bw() +  theme(legend.position="none") + 
    theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
 ```
