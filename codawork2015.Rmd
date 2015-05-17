@@ -9,7 +9,7 @@ output:
 
 ```{r, include=FALSE}
 library(ggplot2)
-
+library(mclust)
 library(dplyr)
 
 knitr::opts_chunk$set(comment = " ", echo = FALSE, warning = FALSE)
@@ -133,7 +133,7 @@ is maximum, in other words, to the highest component
 \left(\color{red}{\frac{\pi_1 f_1(x_i;\theta_1)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, \color{green}{\frac{\pi_2 f_2(x_i;\theta_2)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, \color{blue}{\frac{\pi_3 f_3(x_i;\theta_3)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}} \right)
 \]
 
-or, in other words, to the highest component
+or simplifying, to the highest component
 
 \[
 \left(\color{red}{\pi_1 f_1(x_i;\theta_1)}, \color{green}{\pi_2 f_2(x_i;\theta_2)}, \color{blue}{\pi_3 f_3(x_i;\theta_3)} \right)
@@ -145,11 +145,50 @@ An approach introduced by different authors consist in consisdering the mixture 
 f(x) = \color{red}{\pi_1 f_1(x;\theta_1)} + \color{green}{ (\pi_2+\pi_3)\left\{ \frac{\pi_2}{\pi_2+\pi_3} f_2(x;\theta_2) + \frac{\pi_3}{\pi_2+\pi_3} f_3(x;\theta_3) \right\}}
 \]
 
-
+and classify each observation to the component
 
 \[
 \left(\color{red}{\pi_1 f_1(x_i;\theta_1)}, \color{green}{\pi_2 f_2(x_i;\theta_2)}+\color{green}{\pi_3 f_3(x_i;\theta_3)} \right)
 \]
+
+```{r, fig.width=4, fig.height=3, fig.show='hold'}
+(p32 <- p1 +
+  geom_line(data=df.dens, aes(x=x, y=f), size = 1) +
+  geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f2+f3), size = 1, col = 'green', alpha=0.6))
+
+(p12c <- ggplot() + 
+  geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white', alpha=0.6) +
+  geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f2+f3), size = 1, col = 'green', alpha=0.6) + 
+  geom_segment(data=df, aes(x=x, xend=x, y=0, yend=0.01, col=class), alpha=1) + 
+  theme_bw() +  theme(legend.position="none") +xlim(v_xlim) + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL) +  
+   scale_color_manual(values = c("red", "green", "blue")))
+```
+
+# Hierarchical mixture sequence
+
+```{r, fig.width=8.5, fig.height=3}
+set.seed(3)
+ms = c(runif(3, min = -2 , max= -1), runif(3, min = 0 , max= 1), runif(3, min = 2 , max= 3))
+x = Reduce('c', lapply(ms, function(m) rnorm(1000, m, 0.1)))
+mc = Mclust(x, G = 2:10)
+
+df.d = data.frame(
+  x = x,
+  class = mc$classification)
+
+p = ggplot() + 
+  geom_histogram(data=df.d, aes(x=x, y = ..density..), binwidth=0.1, col='black', fill='white', alpha=0.6)
+for(i in 1:mc$G){
+  df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
+  func = function(x) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i, alpha=0.6)
+}
+p + theme_bw() +  theme(legend.position="none") + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
+```
 
 # The entropy criteria
 
