@@ -185,7 +185,7 @@ p = ggplot() +
 for(i in 1:mc$G){
   df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
   func = function(x) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )
-  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i, alpha=0.6)
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = rainbow(mc$G)[i], alpha=0.99)
 }
 p + theme_bw() +  theme(legend.position="none") + 
    theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL)
@@ -202,7 +202,7 @@ p = ggplot() +
 for(i in hp[[7]]){
   df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
   func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
-  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = rainbow(mc$G)[i[[1]]], alpha=0.99)
 }
 
 p + theme_bw() +  theme(legend.position="none") + 
@@ -216,7 +216,7 @@ p = ggplot() +
 for(i in hp[[6]]){
   df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
   func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
-  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = rainbow(mc$G)[i[[1]]], alpha=0.99)
 }
 
 p + theme_bw() +  theme(legend.position="none") + 
@@ -230,7 +230,7 @@ p = ggplot() +
 for(i in hp[[5]]){
   df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
   func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
-  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = rainbow(mc$G)[i[[1]]], alpha=0.99)
 }
 
 p + theme_bw() +  theme(legend.position="none") + 
@@ -244,7 +244,7 @@ p = ggplot() +
 for(i in hp[[4]]){
   df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
   func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
-  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = rainbow(mc$G)[i[[1]]], alpha=0.99)
 }
 
 p + theme_bw() +  theme(legend.position="none") + 
@@ -258,7 +258,7 @@ p = ggplot() +
 for(i in hp[[3]]){
   df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
   func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
-  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = i[[1]], alpha=0.6)
+  p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = rainbow(mc$G)[i[[1]]], alpha=0.99)
 }
 
 p + theme_bw() +  theme(legend.position="none") + 
