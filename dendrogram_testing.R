@@ -1,4 +1,4 @@
-
+library(dendextend)
 
 set_diff = lapply(8:2, function(i) unlist(setdiff(hp[[i-1]], hp[[i]])))
 cummulative = lapply(1:7, function(till, set_diff){
