@@ -37,10 +37,10 @@ a$merge = do.call('rbind', lapply(1:7, function(i){
 }))
 a$height <- 1:nrow(a$merge)
 a$order <- hp[[1]][[1]]
-a$labels <- hp[[1]][[1]]
+a$labels <- rep("", 8)#hp[[1]][[1]]
 class(a) <- "hclust"        # make it an hclust object
+
 hc = as.dendrogram(a)
-plot(hc)
 
 # Function to color branches
 colbranches <- function(n, col)
@@ -51,10 +51,16 @@ colbranches <- function(n, col)
   n # Don't forget to return the node!
 }
 
-LVL = 3
-d1=color_branches(hc, k=LVL, col = rainbow(8)[sapply(hp[[LVL]], function(i) i[[1]])])
-d1 = assign_values_to_branches_edgePar(d1, value = 3, edgePar = "lwd")
-plot(d1, lwd=20, lty = 3, axes = FALSE)
+plt_den = function(LVL, h){
+  d1=color_branches(hc, k=LVL, col = rainbow(8)[1+(3+sapply(hp[[LVL]], function(i) i[[1]]))%% 8])
+  d1 = assign_values_to_branches_edgePar(d1, value = 3, edgePar = "lwd")
+  
+  plot(d1, lwd=20, lty = 3, axes = FALSE)
+  rect(0, h, 10, 10, col='white', border=NA)
+}
+
+lvl = 6
+plt_den(lvl, 8.5-lvl)
 
 # d1=color_branches(hc, k=7, col = rainbow(7))
 # d1 = assign_values_to_leaves_edgePar(d1, value = 3, edgePar = "lwd")
