@@ -228,9 +228,6 @@ set_diff2 = mapply(intersect, set_diff, cummulative)
 
 leafs = mapply(setdiff, set_diff, set_diff2)
 
-
-
-
 a = list()
 a$merge = do.call('rbind', lapply(1:7, function(i){
   if(length(leafs[[i]]) == 2){

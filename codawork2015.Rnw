@@ -145,10 +145,11 @@ ggplot() +
 \begin{frame}
 \frametitle{Common approach in model based clustering}
 \begin{itemize}
-\item Number of groups $K$: BIC criteria the most common.
-\only<1>{ \[ f(x) = \color{black}{\pi_1 f_1(x;\theta_1)} + \dots + \color{black}{\pi_K f_K(x;\theta_K)}. \] }
-\only<2>{ \[ f(x) = \color{black}{\pi_1 f_1(x;\theta_1)} + \color{black}{\pi_2 f_2(x;\theta_2)} + \color{black}{\pi_3 f_3(x;\theta_3)}. \] }
-\only<3>{ \[ f(x) = \color{red}{\pi_1 f_1(x;\theta_1)} + \color{green}{\pi_2 f_2(x;\theta_2)} + \color{blue}{\pi_3 f_3(x;\theta_3)}. \] }
+\item Number of groups $K$: BIC criteria the most common.%
+\only<1>{ \[ f(x) = \color{black}{\pi_1 f_1(x;\theta_1)} + \dots + \color{black}{\pi_K f_K(x;\theta_K)}. \] }%
+\only<2>{ \[ f(x) = \color{black}{\pi_1 f_1(x;\theta_1)} + \color{black}{\pi_2 f_2(x;\theta_2)} + \color{black}{\pi_3 f_3(x;\theta_3)}. \] }%
+\only<3->{ \[ f(x) = {\color{red}\pi_1 f_1(x;\theta_1)} + {\color{green}\pi_2 f_2(x;\theta_2)} + {\color{blue}\pi_3 f_3(x;\theta_3)}. \] }%
+\item<4-> Observation are assigned to the component most likely belong to.
 \end{itemize}
 
 \begin{columns}[T]
@@ -167,9 +168,327 @@ p1
   theme(legend.position="none", panel.grid=element_blank())
 @
 }
+\only<4>{
+<<fig.width=4, fig.height=3>>=
+(p1c <- ggplot() + 
+  geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white', alpha=0.6) +
+  geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f2), size = 1, col = 'green', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f3), size = 1, col = 'blue', alpha=0.6) + 
+  geom_segment(data=df, aes(x=x, xend=x, y=0, yend=0.01, col=class), alpha=1) + 
+  theme_bw() +  theme(legend.position="none", panel.grid=element_blank()) +xlim(v_xlim) + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL) + xlab(NULL) +  
+   scale_color_manual(values = c("red", "green", "blue")))
+@
+}
 \end{column}
 \end{columns}
+\end{frame}
 
+\begin{frame}[t]
+\frametitle{Common approach in model based clustering}
+
+\begin{columns}[T]
+\begin{column}{0.33\textwidth}
+<<fig.width=4, fig.height=3>>=
+p1c
+@
+\end{column}
+\begin{column}{0.33\textwidth}
+\uncover<4->{%
+\only<1-4>{
+<<fig.width=4, fig.height=3>>=
+(p32 <- p1 +
+  geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f2+f3), size = 1, col = 'blue', alpha=0.6))
+
+@
+}
+\only<5>{
+<<fig.width=4, fig.height=3>>=
+(p12c <- ggplot() + 
+  geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white', alpha=0.6) +
+  geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
+  geom_line(data=df.dens, aes(x=x, y=f2+f3), size = 1, col = 'blue', alpha=0.6) + 
+  geom_segment(data=df, aes(x=x, xend=x, y=0, yend=0.01, col=class), alpha=1) + 
+  theme_bw() + theme(legend.position="none", panel.grid=element_blank()) +xlim(v_xlim) + 
+   theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ylab(NULL) + xlab(NULL) +  
+   scale_color_manual(values = c("red", "blue", "blue")))
+@
+}
+}
+\end{column}
+\end{columns}
+\begin{itemize}
+\item Given the finite mixture
+\only<1-3>{\[ f(x) = {\color{red}\pi_1 f_1(x;\theta_1)} + {\color{green}\pi_2 f_2(x;\theta_2)} + {\color{blue}\pi_3 f_3(x;\theta_3)},\]}
+\only<4->{\[ f(x) = {\color{red}\pi_1 f_1(x;\theta_1)} + {\color{blue} (\pi_2+\pi_3)\left\{ \frac{\pi_2}{\pi_2+\pi_3} f_2(x;\theta_2) + \frac{\pi_3}{\pi_2+\pi_3} f_3(x;\theta_3) \right\}},\]}
+we assign an observation $x_i$ to the higher component
+\only<1>{ \[ \left({\color{red}\frac{\pi_1 f_1(x_i;\theta_1)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, {\color{green}\frac{\pi_2 f_2(x_i;\theta_2)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, {\color{blue}\frac{\pi_3 f_3(x_i;\theta_3)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}} \right) \] }
+\only<2-4>{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{green}\pi_2 f_2(x_i;\theta_2)}, {\color{blue}\pi_3 f_3(x_i;\theta_3)} \right) \] }
+\only<5>{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{blue}\pi_2 f_2(x_i;\theta_2) + \pi_3 f_3(x_i;\theta_3)} \right) \] }
+\item<3-> A different approach is to consider a \alert{mixture of Gaussian mixtures}
+\end{itemize}
+
+\end{frame}
+
+<<include=FALSE>>=
+set.seed(3)
+ms = c(runif(3, min = -2 , max= -1), runif(3, min = 0 , max= 1), runif(3, min = 2 , max= 3))
+x = Reduce('c', lapply(ms, function(m) rnorm(1000, m, 0.1)))
+mc = Mclust(x, G = 2:10)
+
+df.d = data.frame(
+  x = x,
+  class = mc$classification)
+
+hp = get_hierarchical_partition(mc$z, lambda = function(v_tau, a, b) if(which.max(v_tau) == b) 1 else 0, omega = function(v_tau, a) v_tau[a])
+@
+
+<<include=FALSE>>=
+draw_partition = function(LVL){
+  p = ggplot() + 
+    geom_histogram(data=df.d, aes(x=x, y = ..density..), binwidth=0.1, col='black', fill='white', alpha=0.6)
+  
+  for(i in hp[[LVL]]){
+    df.d.dens = data.frame(x = seq(-3, 4, length=1000)) 
+    func = function(x) Reduce(`+`, lapply(i, function(i) mc$parameters$pro[i] * dnorm(x, mean = mc$parameters$mean[i], sd = sqrt(mc$parameters$variance$sigmasq) )))
+    p = p + geom_line(data=df.d.dens %>% mutate(f = func(x)), aes(x=x, y=f), size = 1, col = rainbow(8)[1+(3+i[[1]])%%8], alpha=0.99)
+  }
+  
+  p + theme_bw() +  theme(legend.position="none") + 
+    theme(axis.ticks = element_blank(), 
+          axis.text = element_blank(),
+          panel.grid=element_blank(),
+          panel.border = element_blank()) + ylab(NULL) + ylim(0,1) + xlab(NULL)
+}
+@
+
+<<include=FALSE>>=
+library(dendextend)
+
+set_diff = lapply(8:2, function(i) unlist(setdiff(hp[[i-1]], hp[[i]])))
+cummulative = lapply(1:7, function(till, set_diff){
+  if(till>1)
+    Reduce('union', set_diff[1:(till-1)])
+  else
+    integer(0)
+}, set_diff)
+set_diff2 = mapply(intersect, set_diff, cummulative)
+
+leafs = mapply(setdiff, set_diff, set_diff2)
+
+
+
+
+a = list()
+a$merge = do.call('rbind', lapply(1:7, function(i){
+  if(length(leafs[[i]]) == 2){
+    return(-leafs[[i]])
+  }
+  if(length(leafs[[i]]) == 1){
+    i1 = max(which(sapply(set_diff[1:(i-1)], 
+                          function(s) 
+                            length(setdiff(setdiff(set_diff[[i]], leafs[[i]]), s)) == 0)))
+    return(c(-leafs[[i]], i1))
+  }
+  if(length(leafs[[i]]) == 0){
+    i1 = max(which(sapply(set_diff[1:(i-1)], 
+                          function(s) 
+                            length(setdiff(s, setdiff(set_diff[[i]], leafs[[i]]))) == 0)))
+    i2 = max(which(sapply(set_diff[1:(i-1)], 
+                          function(s) 
+                            length(setdiff(s, setdiff(setdiff(set_diff[[i]], set_diff[[i1]]), leafs[[i]]))) == 0)))
+    return(c(i1, i2))
+  }
+}))
+a$height <- 1:nrow(a$merge)
+a$order <- hp[[1]][[1]]
+a$labels <- rep("", 8)#hp[[1]][[1]]
+class(a) <- "hclust"        # make it an hclust object
+
+hc = as.dendrogram(a)
+
+# Function to color branches
+colbranches <- function(n, col)
+{
+  a <- attributes(n) # Find the attributes of current node
+  # Color edges with requested color
+  attr(n, "edgePar") <- c(a$edgePar, list(col=col, lwd=2))
+  n # Don't forget to return the node!
+}
+
+plt_den = function(LVL, h){
+  d1=color_branches(hc, k=LVL, col = rainbow(8)[1+(3+sapply(hp[[LVL]], function(i) i[[1]]))%% 8])
+  d1 = assign_values_to_branches_edgePar(d1, value = 3, edgePar = "lwd")
+  
+  plot(d1, lwd=20, lty = 3, axes = FALSE)
+  rect(0, h, 10, 10, col='white', border=NA)
+}
+@
+
+\begin{frame}[t]
+\frametitle{Hierarchical mixture sequence}
+\begin{itemize}
+\item Repeatedly merge those components "more likely" to be considered as a single cluster
+
+\begin{columns}
+\begin{column}{0.90\textwidth}
+\only<1>{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 8
+print(draw_partition(8))
+@
+}
+\only<2>{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 7
+print(draw_partition(lvl))
+@
+}
+\only<3>{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 6
+print(draw_partition(lvl))
+@
+}
+\only<4>{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 5
+print(draw_partition(lvl))
+@
+}
+\only<5>{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 4
+print(draw_partition(lvl))
+@
+}
+\only<6>{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 3
+print(draw_partition(lvl))
+@
+}
+\only<7>{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 2
+print(draw_partition(lvl))
+@
+}
+\only<8->{
+<<fig.width=8.5, fig.height=3>>=
+lvl = 1
+print(draw_partition(lvl))
+@
+}
+\end{column}
+\begin{column}{0.20\textwidth}
+\only<1>{
+<<fig.width=6, fig.height=6>>=
+lvl = 8
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\only<2>{
+<<fig.width=6, fig.height=6>>=
+lvl = 7
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\only<3>{
+<<fig.width=6, fig.height=6>>=
+lvl = 6
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\only<4>{
+<<fig.width=6, fig.height=6>>=
+lvl = 5
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\only<5>{
+<<fig.width=6, fig.height=6>>=
+lvl = 4
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\only<6>{
+<<fig.width=6, fig.height=6>>=
+lvl = 3
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\only<7>{
+<<fig.width=6, fig.height=6>>=
+lvl = 2
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\only<8->{
+<<fig.width=6, fig.height=6>>=
+lvl = 1
+par(mar=c(0,0,0,0))
+plt_den(lvl, 8.5-lvl)
+@
+}
+\end{column}
+\end{columns}
+\item<9> Strategies based on posterior probabilities
+\[
+\tau_{ij} = \frac{\pi_j f_j(x_i;\theta_j)}{\sum_{\ell=1}^K \pi_\ell f_\ell(x_i;\theta_\ell)}.
+\]
+\end{itemize}
+\end{frame}
+
+\section{Merging components based on posterior probability}
+
+\begin{frame}
+\frametitle{The Shannon entropy approach (Baudry et al. (2010))}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Aitchison norm as an entropy measure}
+\end{frame}
+
+\begin{frame}
+\frametitle{The missclassification approach (Hennig (2010))}
+\end{frame}
+
+\begin{frame}
+\frametitle{The log-ratio as a misclassification measure}
+\end{frame}
+
+
+\section{Advantages of using a compositional approach}
+
+\begin{frame}
+\frametitle{Scale invariance}
+\end{frame}
+
+\begin{frame}
+\frametitle{Subcompositional coherence}
+\end{frame}
+
+\section{Final comments}
+\begin{frame}
+\frametitle{Conclusions and open questions}
+\begin{itemize}
+\item CoDa approach allow us to merge mixture components using a well established principles
+\end{itemize}
+
+\begin{itemize}
+\item The merging approach is the amalgamation (one observation can only be considered from one component). Can we use other forms of merging? Maybe geometrical mean between components? What does this form of merging mean?
+\item The merging approach is similar to the approach of principal components. Does it make sense to consider principal component here?
+\end{itemize}
 \end{frame}
 
 \end{document}
