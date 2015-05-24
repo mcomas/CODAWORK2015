@@ -74,7 +74,7 @@ df.dens = X$density
   ylab(NULL) + xlab(NULL))
 ```
 
-Just looking to the plot, _how many group do you see?_ I think, it is natural to see two group; one formed with positive values and another formed with the negative ones. 
+Just looking to the plot, _how many groups do you see?_ I think, it is natural to see two group; one formed with positive values and another formed with the negative ones. 
 
 ```{r, fig.width=4, fig.height=3}
 df$km = ifelse(df$x < 0, '1', '2')
