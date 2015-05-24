@@ -146,8 +146,8 @@ ggplot() +
 \frametitle{Common approach in model based clustering}
 \begin{itemize}
 \item Number of groups $K$: BIC criteria the most common.%
-\only<1>{ \[ f(x) = \color{black}{\pi_1 f_1(x;\theta_1)} + \dots + \color{black}{\pi_K f_K(x;\theta_K)}. \] }%
-\only<2>{ \[ f(x) = \color{black}{\pi_1 f_1(x;\theta_1)} + \color{black}{\pi_2 f_2(x;\theta_2)} + \color{black}{\pi_3 f_3(x;\theta_3)}. \] }%
+\only<1>{ \[ f(x) = \pi_1 f_1(x;\theta_1) + \dots + \pi_K f_K(x;\theta_K). \] }%
+\only<2>{ \[ f(x) = \pi_1 f_1(x;\theta_1) + \pi_2 f_2(x;\theta_2) + \pi_3 f_3(x;\theta_3). \] }%
 \only<3->{ \[ f(x) = {\color{red}\pi_1 f_1(x;\theta_1)} + {\color{green}\pi_2 f_2(x;\theta_2)} + {\color{blue}\pi_3 f_3(x;\theta_3)}. \] }%
 \item<4-> Observation are assigned to the component most likely belong to.
 \end{itemize}
@@ -319,10 +319,10 @@ colbranches <- function(n, col)
 }
 
 plt_den = function(LVL, h){
-  d1=color_branches(hc, k=LVL, col = rainbow(8)[1+(3+sapply(hp[[LVL]], function(i) i[[1]]))%% 8])
-  d1 = assign_values_to_branches_edgePar(d1, value = 3, edgePar = "lwd")
+  d1=color_branches(rev(hc), k=LVL, col = rainbow(8)[1+(3+sapply(hp[[LVL]], function(i) i[[1]]))%% 8])
+  d1 = assign_values_to_branches_edgePar(d1, value = 7, edgePar = "lwd")
   
-  plot(d1, lwd=20, lty = 3, axes = FALSE)
+  plot(d1, lwd=2, lty = 3, axes = FALSE)
   rect(0, h, 10, 10, col='white', border=NA)
 }
 @
@@ -451,8 +451,55 @@ plt_den(lvl, 8.5-lvl)
 
 \section{Merging components based on posterior probability}
 
-\begin{frame}
-\frametitle{The Shannon entropy approach (Baudry et al. (2010))}
+\begin{frame}[t]
+\frametitle{Merging components based on posterior probability}
+
+\begin{block}{Input}
+A sample of probabilities to belong to each component $I_j$, 
+\begin{columns}
+\column{0.4\textwidth}
+\[ \left[ \begin{array}{ccccc}
+\idea{(}\tau_{11}\idea{,} & \dots & \tau_{1j}\idea{,} & \dots & \tau_{1k}\idea{),} \\
+\vdots      & &    \vdots                     & &    \vdots                     \\
+\idea{(}\tau_{i1}\idea{,} & \dots & \tau_{ij}\idea{,} & \dots & \tau_{ik}\idea{),} \\
+\vdots      & &      \vdots                   & &       \vdots                  \\
+\idea{(}\tau_{n1}\idea{,} & \dots & \tau_{nj}\idea{,} & \dots & \tau_{nk}\idea{)}
+\end{array} \right] 
+\idea{ \in \mathcal{S}^k } \]
+\column{0.3\textwidth}
+\end{columns}
+\end{block}
+
+\pause
+\begin{alertblock}{Goal}
+Merge components (sequentially) to obtain a hierarchy over the set of components % $\{C_1, \dots, C_k\}$. %In other words, obtain a binary tree with a set of leafs $\{C_1, \dots, C_k\}$
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}[t]
+\frametitle{The Shannon entropy approach}
+
+\begin{alertblock}{The Shannon entropy approach (Baudry et al. (2010))}
+Merge those component $I_a$ and $I_b$ in such a way that the resulting Shannon entropy is minimized.
+\end{alertblock}
+
+\begin{itemize}
+\item The Shannon entropy of a posterior probability sample is 
+\[
+- \sum_{i=1}^n \sum_{j=1}^k \tau_{ij} log(\tau_{ij})
+\]
+\item To minimize the entropy after merging components $I_a$ and $I_b$ is equivalent to maximize
+\[
+\sum_{i=1}^n  (\tau_{i I_a}+\tau_{i I_b}) \log(\tau_{i I_a} + \tau_{i I_b}) - 
+\sum_{i=1}^n \left\{ \tau_{i I_a} \log(\tau_{i I_a}) + \tau_{i I_b} \log(\tau_{i I_b})\right\}.
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+\frametitle{The Shannon entropy approach}
+
 \end{frame}
 
 \begin{frame}
