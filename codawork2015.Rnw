@@ -227,9 +227,9 @@ p1c
 \only<4->{\[ f(x) = {\color{red}\pi_1 f_1(x;\theta_1)} + {\color{blue} (\pi_2+\pi_3)\left\{ \frac{\pi_2}{\pi_2+\pi_3} f_2(x;\theta_2) + \frac{\pi_3}{\pi_2+\pi_3} f_3(x;\theta_3) \right\}},\]}
 we assign an observation $x_i$ to the higher component
 \only<1>{ \[ \left({\color{red}\frac{\pi_1 f_1(x_i;\theta_1)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, {\color{green}\frac{\pi_2 f_2(x_i;\theta_2)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, {\color{blue}\frac{\pi_3 f_3(x_i;\theta_3)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}} \right) \] }
-\only<2-4>{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{green}\pi_2 f_2(x_i;\theta_2)}, {\color{blue}\pi_3 f_3(x_i;\theta_3)} \right) \] }
-\only<5>{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{blue}\pi_2 f_2(x_i;\theta_2) + \pi_3 f_3(x_i;\theta_3)} \right) \] }
-\item<3-> A different approach is to consider a \alert{mixture of Gaussian mixtures}
+\only<2-3>{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{green}\pi_2 f_2(x_i;\theta_2)}, {\color{blue}\pi_3 f_3(x_i;\theta_3)} \right) \] }
+\only<4>{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{blue}\pi_2 f_2(x_i;\theta_2) + \pi_3 f_3(x_i;\theta_3)} \right) \] }
+\item<3-> A different approach is to consider a \alert{mixture of mixtures}
 \end{itemize}
 
 \end{frame}
