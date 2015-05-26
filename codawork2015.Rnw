@@ -491,7 +491,7 @@ Merge those component $I_a$ and $I_b$ in such a way that the resulting Shannon e
 \[
 - \sum_{i=1}^n \sum_{j=1}^k \tau_{ij} log(\tau_{ij})
 \]
-\item To minimize the entropy after merging components $I_a$ and $I_b$ is equivalent to maximize
+\item To minimize the entropy after merging components $I_a$ and $I_b$, maximize
 \[
 \sum_{i=1}^n  (\tau_{i I_a}+\tau_{i I_b}) \log(\tau_{i I_a} + \tau_{i I_b}) - 
 \sum_{i=1}^n \left\{ \tau_{i I_a} \log(\tau_{i I_a}) + \tau_{i I_b} \log(\tau_{i I_b})\right\}.
@@ -502,8 +502,8 @@ Merge those component $I_a$ and $I_b$ in such a way that the resulting Shannon e
 \begin{frame}[t]
 \frametitle{The Shannon entropy approach}
 \begin{itemize}
-\item Given the posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \dots \tau_{ik} \right)$.
-\item To study the relation between $\tau_{i1}$ and $\tau_{i2}$, we can restrict to $\left( \tau_{i1}, \tau_{i2}, 1-\tau_{i1}-\tau_{i2} \right)$
+\item Consider a posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \tau_{i3} \right)$.
+\item For $\tau_3 = 0.2$\uncover<2->{, {\color{red}$\tau_3 = 0.4$}}\uncover<3->{, {\color{green}$\tau_3 = 0.6$}}\uncover<4->{ and {\color{blue}$\tau_3 = 0.8$}.}
 \end{itemize}
 
 \begin{columns}
@@ -517,7 +517,7 @@ xlog = function(x) ifelse(x == 0, 0, x * log(x))
 entr = function(x) -(xlog(x) + xlog(1-x))
 p = ggplot()
 for(i  in 1){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = xlog(1-other) - xlog(x) - xlog(1-other-x)), aes(x = x, y = ent_diff), col=i)
 }
 pentropy = p + theme_classic() + 
@@ -525,11 +525,11 @@ pentropy = p + theme_classic() +
 
 pscale = ggtern()
 for(i  in 1){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -550,7 +550,7 @@ xlog = function(x) ifelse(x == 0, 0, x * log(x))
 entr = function(x) -(xlog(x) + xlog(1-x))
 p = ggplot()
 for(i  in 1:2){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = xlog(1-other) - xlog(x) - xlog(1-other-x)), aes(x = x, y = ent_diff), col=i)
 }
 pentropy = p + theme_classic() + 
@@ -558,11 +558,11 @@ pentropy = p + theme_classic() +
 
 pscale = ggtern()
 for(i  in 1:2){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -583,7 +583,7 @@ xlog = function(x) ifelse(x == 0, 0, x * log(x))
 entr = function(x) -(xlog(x) + xlog(1-x))
 p = ggplot()
 for(i  in 1:3){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = xlog(1-other) - xlog(x) - xlog(1-other-x)), aes(x = x, y = ent_diff), col=i)
 }
 pentropy = p + theme_classic() + 
@@ -591,11 +591,11 @@ pentropy = p + theme_classic() +
 
 pscale = ggtern()
 for(i  in 1:3){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -616,7 +616,7 @@ xlog = function(x) ifelse(x == 0, 0, x * log(x))
 entr = function(x) -(xlog(x) + xlog(1-x))
 p = ggplot()
 for(i  in 1:4){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = xlog(1-other) - xlog(x) - xlog(1-other-x)), aes(x = x, y = ent_diff), col=i)
 }
 pentropy = p + theme_classic() + 
@@ -624,11 +624,11 @@ pentropy = p + theme_classic() +
 
 pscale = ggtern()
 for(i  in 1:4){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -653,7 +653,7 @@ detach("package:ggtern", unload=TRUE)
 \begin{frame}[t]
 \frametitle{The Aitchison norm as an entropy measure}
 
-\begin{alertblock}{The Shannon entropy approach (Baudry et al. (2010))}
+\begin{alertblock}{Approach using the Aitchison norm}
 Merge those component $I_a$ and $I_b$ in such a way that
 \[
 \sum_{i=1}^n \|(\tau_{i I_a}, \tau_{i I_b})\|^2
@@ -662,7 +662,8 @@ is minimum.
 \end{alertblock}
 
 \begin{itemize}
-\item It only depends on component $I_a$ and $I_b$.
+\item It measures the square distance to $\left(\frac{1}{2}, \frac{1}{2}\right)$ (minimum entropy).
+\item In contrast to Shannon entropy, it only depends on components $I_a$ and $I_b$.
 \end{itemize}
 
 \end{frame}
@@ -670,7 +671,8 @@ is minimum.
 \begin{frame}
 \frametitle{The Aitchison norm as an entropy measure}
 \begin{itemize}
-\item Given the posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \dots \tau_{ik} \right)$.
+\item Given the posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \tau_{i3} \right)$.
+\item For $\tau_3 = 0.2$\uncover<2->{, {\color{red}$\tau_3 = 0.4$}}\uncover<3->{, {\color{green}$\tau_3 = 0.6$}}\uncover<4->{ and {\color{blue}$\tau_3 = 0.8$}.}
 \end{itemize}
 
 \begin{columns}
@@ -682,18 +684,18 @@ library(ggtern)
 <<fig.width=6.5, fig.height=5>>=
 p = ggplot()
 for(i  in 1){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = -log((1-other-x)/x)^2), aes(x = x, y = ent_diff), col=i)
 }
 paitchison = p + theme_classic() + 
   xlab(expression(tau[2])) + ylab('Minus the Aitchison norm') + coord_cartesian(xlim=c(0,1), ylim=c(-5, 1)) + theme(panel.grid=element_blank())
 pscale = ggtern()
 for(i  in 1){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -712,18 +714,18 @@ print(pscale, vp=vscale)
 <<fig.width=6.5, fig.height=5>>=
 p = ggplot()
 for(i  in 1:2){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = -log((1-other-x)/x)^2), aes(x = x, y = ent_diff), col=i)
 }
 paitchison = p + theme_classic() + 
   xlab(expression(tau[2])) + ylab('Minus the Aitchison norm') + coord_cartesian(xlim=c(0,1), ylim=c(-5, 1)) + theme(panel.grid=element_blank())
 pscale = ggtern()
 for(i  in 1:2){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -742,18 +744,18 @@ print(pscale, vp=vscale)
 <<fig.width=6.5, fig.height=5>>=
 p = ggplot()
 for(i  in 1:3){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = -log((1-other-x)/x)^2), aes(x = x, y = ent_diff), col=i)
 }
 paitchison = p + theme_classic() + 
   xlab(expression(tau[2])) + ylab('Minus the Aitchison norm') + coord_cartesian(xlim=c(0,1), ylim=c(-5, 1)) + theme(panel.grid=element_blank())
 pscale = ggtern()
 for(i  in 1:3){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -772,18 +774,18 @@ print(pscale, vp=vscale)
 <<fig.width=6.5, fig.height=5>>=
 p = ggplot()
 for(i  in 1:4){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   p = p + geom_line(data = data.frame(x = seq(0, 1-other, 0.0001)) %>% mutate(ent_diff = -log((1-other-x)/x)^2), aes(x = x, y = ent_diff), col=i)
 }
 paitchison = p + theme_classic() + 
   xlab(expression(tau[2])) + ylab('Minus the Aitchison norm') + coord_cartesian(xlim=c(0,1), ylim=c(-5, 1)) + theme(panel.grid=element_blank())
 pscale = ggtern()
 for(i  in 1:4){
-  other = seq(0.2, 0.8, length.out=5)[i]
+  other = seq(0.2, 0.8, length.out=4)[i]
   pscale = pscale + geom_Tline(Tintercept=other, col=i)
 }
 pscale = pscale +
-  Tlab(expression(1-tau[1]-tau[2])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
+  Tlab(expression(tau[3])) + Llab(expression(tau[1])) + Rlab(expression(tau[2])) + 
   theme_classic() + theme(panel.grid.tern=element_blank(), 
                      axis.tern.ticks=element_blank(), 
                      axis.tern.text.T=element_blank(),
@@ -813,7 +815,7 @@ Merge those component $I_a$ and $I_b$ for which the probability of assigning one
 \end{alertblock}
 
 \[
-P(\{x_i \text{ assigned to } I_b\}|\{x_i \text{ generated by } I_a\})=
+P(\{x_i \text{ assigned to } I_b\}|\{x_i \text{ generated by } I_a\}) =
 \]
 \[
 \frac{{\color{blue}P( \{x_i \text{ assigned to } I_b\}, \{x_i \text{ generated by } I_a\})} }{ {\color{gg2}P(\{x_i \text{ generated by } I_a\})} }
@@ -827,10 +829,17 @@ he proposed the estimator
 }.
 \]
 \pause
-The estimator can be written as 
+The estimator can be written as
+\only<2>{%
 \[
 \frac{ \sum_{i=1}^n {\tau_{i I_a} \mathbbm{1}\left( \forall j\; \tau_{i I_{b}} \geq \tau_{i I_j} \right)}}{\sum_{i=1}^n \tau_{i I_a} }
 \]
+}
+\only<3>{%
+\[
+\frac{ \sum_{i=1}^n {\tau_{i I_a} \red{\mathbbm{1}\left( \forall j\; \tau_{i I_{b}} \geq \tau_{i I_j} \right)}}}{\sum_{i=1}^n \tau_{i I_a} }
+\]
+}
 \end{frame}
 
 \begin{frame}[t]
@@ -838,6 +847,8 @@ The estimator can be written as
 
 \begin{itemize}
 \item Given the posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \tau_{i3} \right)$.
+\item Remember, the confusion is given by $\mathbbm{1}\left( \forall j\; \tau_{i I_{b}} \geq \tau_{i I_j} \right)$
+\item For $\tau_3 = 0.1$\uncover<2->{, {\color{red}$\tau_3 = 0.3$}}\uncover<3->{ and {\color{green}$\tau_3 = 0.5$}.}
 \end{itemize}
 
 \begin{columns}
@@ -847,7 +858,7 @@ library(ggtern)
 @
 \only<1>{
 <<fig.width=6.5, fig.height=5>>=
-d <- lapply(steps <- c(0.1, 0.25, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
+d <- lapply(steps <- c(0.1, 0.3, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
                                                             mutate(demp = ifelse(1-other-x < x & other < x, 1, 0),
                                                                    other = as.character(other))) %>% bind_rows %>% mutate(
                                                                      other = factor(other, labels = sprintf("tau[3]==%3.1f",steps)))
@@ -884,7 +895,7 @@ print(pscale, vp=vscale)
 }
 \only<2>{
 <<fig.width=6.5, fig.height=5>>=
-d <- lapply(steps <- c(0.1, 0.25, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
+d <- lapply(steps <- c(0.1, 0.3, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
                                                             mutate(demp = ifelse(1-other-x < x & other < x, 1, 0),
                                                                    other = as.character(other))) %>% bind_rows %>% mutate(
                                                                      other = factor(other, labels = sprintf("tau[3]==%3.1f",steps)))
@@ -921,7 +932,7 @@ print(pscale, vp=vscale)
 }
 \only<3>{
 <<fig.width=6.5, fig.height=5>>=
-d <- lapply(steps <- c(0.1, 0.25, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
+d <- lapply(steps <- c(0.1, 0.3, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
                                                             mutate(demp = ifelse(1-other-x < x & other < x, 1, 0),
                                                                    other = as.character(other))) %>% bind_rows %>% mutate(
                                                                      other = factor(other, labels = sprintf("tau[3]==%3.1f",steps)))
@@ -966,6 +977,30 @@ detach("package:ggtern", unload=TRUE)
 \begin{frame}
 \frametitle{The log-ratio as a misclassification measure}
 
+\begin{alertblock}{Approach using the logratio}
+Merge those component $I_a$ and $I_b$ in such a way that
+\[
+\frac{ \sum_{i=1}^n {\tau_{i I_a} log(\tau_{i I_b}/\tau_{i I_a}) }}{\sum_{i=1}^n \tau_{i I_a} }
+\]
+is minimum.
+\end{alertblock}
+
+\begin{itemize}
+\item We've replaced the confusion measure $\mathbbm{1}\left( \forall j\; \tau_{i I_{b}} \geq \tau_{i I_j} \right)$ by $log(\tau_{i I_b}/\tau_{i I_a})$.
+\item It measures how relatively big is $\tau_{i I_b}$ to $\tau_{i I_b}$.
+\item A similar measure has been proposed by Longford~\&~Bartosova~(2014) ($\frac{\tau_{i I_b}}{\tau_{i I_a} + \tau_{iI_b}}$).
+\item In contrast to DEMP, it only depends on $I_a$ and $I_b$.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The log-ratio as a misclassification measure}
+\begin{itemize}
+\item Given the posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \tau_{i3} \right)$.
+\item Remember, the confusion now is given by $log\left(\tau_{i I_{b}}/\tau_{i I_{a}} \right)$
+\item For $\tau_3 = 0.1$\uncover<2->{, {\color{red}$\tau_3 = 0.3$}}\uncover<3->{ and {\color{green}$\tau_3 = 0.5$}.}
+\end{itemize}
 \begin{columns}
 \column{0.7\textwidth}
 <<include=FALSE>>=
@@ -973,7 +1008,7 @@ library(ggtern)
 @
 \only<1>{
 <<fig.width=6.5, fig.height=5>>=
-d <- lapply(steps <- c(0.1, 0.25, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
+d <- lapply(steps <- c(0.1, 0.3, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
                                                             mutate(log = log(x/(1-other-x)),
                                                                    other = as.character(other))) %>% bind_rows %>% mutate(
                                                                      other = factor(other, labels = sprintf("tau[3]==%3.1f",steps)))
@@ -1010,7 +1045,7 @@ print(pscale, vp=vscale)
 }
 \only<2>{
 <<fig.width=6.5, fig.height=5>>=
-d <- lapply(steps <- c(0.1, 0.25, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
+d <- lapply(steps <- c(0.1, 0.3, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
                                                             mutate(log = log(x/(1-other-x)),
                                                                    other = as.character(other))) %>% bind_rows %>% mutate(
                                                                      other = factor(other, labels = sprintf("tau[3]==%3.1f",steps)))
@@ -1047,7 +1082,7 @@ print(pscale, vp=vscale)
 }
 \only<3>{
 <<fig.width=6.5, fig.height=5>>=
-d <- lapply(steps <- c(0.1, 0.25, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
+d <- lapply(steps <- c(0.1, 0.3, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
                                                             mutate(log = log(x/(1-other-x)),
                                                                    other = as.character(other))) %>% bind_rows %>% mutate(
                                                                      other = factor(other, labels = sprintf("tau[3]==%3.1f",steps)))
@@ -1094,6 +1129,25 @@ detach("package:ggtern", unload=TRUE)
 
 \begin{frame}
 \frametitle{Scale invariance}
+
+\begin{columns}
+\column{0.4\textwidth}
+\[ \left[ \begin{array}{ccccc}
+\idea{(}\tau_{11}\idea{,} & \dots & \tau_{1j}\idea{,} & \dots & \tau_{1k}\idea{),} \\
+\vdots      & &    \vdots                     & &    \vdots                     \\
+\idea{(}\tau_{i1}\idea{,} & \dots & \tau_{ij}\idea{,} & \dots & \tau_{ik}\idea{),} \\
+\vdots      & &      \vdots                   & &       \vdots                  \\
+\idea{(}\tau_{n1}\idea{,} & \dots & \tau_{nj}\idea{,} & \dots & \tau_{nk}\idea{)}
+\end{array} \right] 
+\idea{ \in \mathcal{S}^k } \]
+\column{0.3\textwidth}
+\end{columns}
+
+\begin{itemize}
+\item Probabilities are not restricted to be probabilities, they can be positive measurements containing relative information between components. 
+\item Probabilities $\rightarrow$ Weights. Fuzzy clustering.
+\end{itemize}
+
 \end{frame}
 
 \begin{frame}
