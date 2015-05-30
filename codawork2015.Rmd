@@ -275,17 +275,24 @@ plt_den = function(LVL, h){
 }
 ```
 
-```{r, fig.width=8.5, fig.height=3, fig.show='animate'}
+<video controls="controls" loop="loop"><source src="merging_animation.webm" />Mergin animation</video>
+
+```{r, fig.width=8.5, fig.height=3, fig.show='animate', eval=F}
+#
+# To generate the animation merging_animation.webm this chunk needs to be executed inside generation. Removing the eval=F. For me, it only worked with MacOSX.
+#
+#
 # for(i in c(8,8:1,1,1,1)){
 #   print(draw_partition(i))
 # }
-
+oldpar <- par(mar=c(0,0,0,0))
 plot.new()
-text(0.5,0.5,"Merging components hierarchically", cex=2)
+rect(-100, -100, 100, 100, col='white', border=NA)
+text(0.5,0.5,"Merging components hierarchically", cex=2, col='blue')
 plot.new()
-text(0.5,0.5,"Merging components hierarchically", cex=2)
+rect(-100, -100, 100, 100, col='white', border=NA)
+text(0.5,0.5,"Merging components hierarchically", cex=2, col='blue')
 
-oldpar <- par()
 #vsecond <- viewport(width = 0.15, height = 0.2, x = 0.85, y = 0.75)
 draw_partition(8)
 for(lvl in c(8:1,1)){
