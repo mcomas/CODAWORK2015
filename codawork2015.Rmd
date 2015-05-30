@@ -497,7 +497,7 @@ The subcompositional coherence allows to consider the following approach. Suppos
 For example in the following figure, if we knew that the components associated to the leaves of the following tree we going to form a single cluster, the we can calculate the merging inside each subtree.
 
 ```{r, fig.width=8.5, fig.height=3}
-source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
+source("online_code.R")
 
 set.seed(50)
 #rnorm(1000, mean=1, sd=100)
@@ -505,6 +505,25 @@ x = lapply(1:20, function(m) rnorm(100, mean = m, sd = 200)) %>% unlist
 hc = hclust(log(stats::dist(x, method="euclidean")), method="ward.D")
 
 A2Rplot(hc, k = 8, boxes = FALSE, col.up = "gray50", main = 'Subcompositional coherence', show.labels = F)
+```
+
+```{r, fig.width=5, fig.height=5}
+g = cutree(hc, k=8)
+
+tab = table(g)
+g = rep(names(tab), tab)
+
+df = expand.grid(1:2000, 1:2000)
+
+g1 = g[df$Var1]
+g2 = g[df$Var2]
+
+df$color = ifelse( g1 == g2, g1, 0)
+
+df = df %>% subset(color != '0')
+
+ggplot() + geom_point(data=df, aes(x = Var1, y=Var2, col=color, fill=color), size=0.5, shape=15) + 
+  theme_bw() + theme(legend.position="none", panel.grid=element_blank()) + xlab(NULL) + ylab(NULL)
 ```
 
 <!--

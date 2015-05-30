@@ -1150,7 +1150,7 @@ If we knew that some subcompositions were going to be forming a single cluster, 
 \begin{columns}
 \column{0.95\textwidth}
 <<fig.width=8.5, fig.height=3>>=
-source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
+source("online_code.R")
 
 set.seed(50)
 #rnorm(1000, mean=1, sd=100)
