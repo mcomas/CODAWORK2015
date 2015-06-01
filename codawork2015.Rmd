@@ -507,7 +507,9 @@ hc = hclust(log(stats::dist(x, method="euclidean")), method="ward.D")
 A2Rplot(hc, k = 8, boxes = FALSE, col.up = "gray50", main = 'Subcompositional coherence', show.labels = F)
 ```
 
-```{r, fig.width=5, fig.height=5}
+This approach reduced the need to compore all the components. We only need to compare those components in the same cluster in such way to obtain a complete hierachical clustering sequence.
+
+```{r, fig.width=3, fig.height=3}
 g = cutree(hc, k=8)
 
 tab = table(g)
@@ -562,3 +564,7 @@ plot(scale(df %>% select(f1,f2,f3) %>% acomp) %>% data.frame %>% acomp, col=df$c
 # ggtern( data = df.cent %>% select(f1, f2, f3, class) ) + geom_point(aes(x=f1, y=f2, z=f3, col=class)) + theme_bw() + scale_colour_discrete(guide=FALSE)
 ```
 
+# Extra material
+
+* You can get the presentation at [[pdf]](codawork2015.pdf),
+* and all the sources at [GIT repository](https://github.com/mcomas/CODAWORK2015)

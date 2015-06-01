@@ -11,6 +11,7 @@
 \usepackage{multirow}
 \usepackage{rotating}
 \usepackage{ragged2e}
+\usepackage{soul}
 %\usetheme{Warsaw}
 %\usepackage{dsfont}
 %\usecolortheme{lily}
@@ -149,19 +150,18 @@ ggplot() +
 \begin{itemize}
 \item Number of components $K$: BIC criteria the most common.%
 \only<1>{ \[ f(x) = \pi_1 f_1(x;\theta_1) + \dots + \pi_K f_K(x;\theta_K). \] }%
-\only<2>{ \[ f(x) = \pi_1 f_1(x;\theta_1) + \pi_2 f_2(x;\theta_2) + \pi_3 f_3(x;\theta_3). \] }%
-\only<3->{ \[ f(x) = {\color{red}\pi_1 f_1(x;\theta_1)} + {\color{green}\pi_2 f_2(x;\theta_2)} + {\color{blue}\pi_3 f_3(x;\theta_3)}. \] }%
-\item<4-> Observation are assigned to the component most likely belong to.
+\only<2->{ \[ f(x) = {\color{red}\pi_1 f_1(x;\theta_1)} + {\color{green}\pi_2 f_2(x;\theta_2)} + {\color{blue}\pi_3 f_3(x;\theta_3)}. \] }%
+\item<3> Observation are assigned to the component most likely belong to.
 \end{itemize}
 
 \begin{columns}[T]
 \begin{column}{0.6\textwidth}
-\only<1-2>{
+\only<1>{
 <<fig.width=4, fig.height=3>>=
 p1
 @
 }
-\only<3>{
+\only<2>{
 <<fig.width=4, fig.height=3>>=
 (p3 <- p1 +
   geom_line(data=df.dens, aes(x=x, y=f1), size = 1, col = 'red', alpha=0.6) + 
@@ -170,7 +170,7 @@ p1
   theme(legend.position="none", panel.grid=element_blank())
 @
 }
-\only<4>{
+\only<3>{
 <<fig.width=4, fig.height=3>>=
 (p1c <- ggplot() + 
   geom_histogram(data=df, aes(x=x, y = ..density..), binwidth=0.5, col='black', fill='white', alpha=0.6) +
@@ -192,9 +192,16 @@ p1
 
 \begin{columns}[T]
 \begin{column}{0.33\textwidth}
+\only<1-3>{
 <<fig.width=4, fig.height=3>>=
 p1c
 @
+}
+\only<4>{
+<<fig.width=4, fig.height=3>>=
+p1c + geom_line(data=df.dens,aes(x=x, y=f), size = 1)
+@
+}
 \end{column}
 \begin{column}{0.33\textwidth}
 \uncover<3->{%
@@ -210,6 +217,11 @@ p1c
    scale_color_manual(values = c("red", "blue", "blue")))
 @
 }
+\only<4>{
+<<fig.width=4, fig.height=3>>=
+p12c + geom_line(data=df.dens,aes(x=x, y=f), size = 1)
+@
+}
 }
 \end{column}
 \end{columns}
@@ -221,6 +233,7 @@ we assign an observation $x_i$ to the higher component
 \only<1>{ \[ \left({\color{red}\frac{\pi_1 f_1(x_i;\theta_1)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, {\color{green}\frac{\pi_2 f_2(x_i;\theta_2)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}}, {\color{blue}\frac{\pi_3 f_3(x_i;\theta_3)}{\sum_{\ell=1}^3 \pi_\ell f_\ell(x_i;\theta_\ell)}} \right) \] }
 \only<2>{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{green}\pi_2 f_2(x_i;\theta_2)}, {\color{blue}\pi_3 f_3(x_i;\theta_3)} \right) \] }
 \only<3->{ \[ \left({\color{red}\pi_1 f_1(x_i;\theta_1)}, {\color{blue}\pi_2 f_2(x_i;\theta_2) + \pi_3 f_3(x_i;\theta_3)} \right) \] }
+\only<4>{\alert{The underlying mixture in both cases is the same.}}
 \end{itemize}
 
 \end{frame}
@@ -437,6 +450,10 @@ plt_den(lvl, 8.5-lvl)
 \end{columns}
 \item<9> Strategies based on posterior probabilities
 \[
+\left(\tau_{i1}, \dots, \tau_{ik} \right)
+\]
+where
+\[
 \tau_{ij} = \frac{\pi_j f_j(x_i;\theta_j)}{\sum_{\ell=1}^K \pi_\ell f_\ell(x_i;\theta_\ell)}.
 \]
 \end{itemize}
@@ -647,9 +664,9 @@ detach("package:ggtern", unload=TRUE)
 \begin{alertblock}{Approach using the Aitchison norm}
 Merge those component $I_a$ and $I_b$ in such a way that
 \[
-\sum_{i=1}^n {\|(\tau_{i I_a}, \tau_{i I_b})\|_\mathcal{A}}^2
+\uncover<2>{\alert{-}}\sum_{i=1}^n {\|(\tau_{i I_a}, \tau_{i I_b})\|_\mathcal{A}}^2
 \]
-is minimum.
+is \only<1>{minimum}\only<2>{\st{minimum} \alert{maximum}}.
 \end{alertblock}
 
 \begin{itemize}
@@ -850,7 +867,7 @@ p = ggplot()
 for(i  in 1){
   p = p + geom_point(data = d %>% subset(other==sprintf("tau[3]==%3.1f",steps[i])), aes(x = x, y = demp), col=i, shape=15, size=1)
 }
-pdemp<-p + theme_classic() + 
+pdemp1<-p + theme_classic() + 
   xlab(expression(tau[2])) + ylab('DEMP criteria') + coord_cartesian(xlim=c(0,1))  + 
   theme(panel.grid=element_blank(),
         strip.text.y = element_text(size=12, face="bold"),
@@ -873,7 +890,7 @@ pscale = pscale +
 plot.new()
 vprincipal <- viewport(width = 1, height = 1, x = 0.5, y = 0.5)
 vscale <- viewport(width = 0.32, height = 0.4, x = 0.8, y = 0.5)
-print(pdemp, vp = vprincipal)
+print(pdemp1, vp = vprincipal)
 print(pscale, vp=vscale)
 @
 }
@@ -1074,7 +1091,7 @@ p = ggplot()
 for(i  in 1:3){
   p = p + geom_line(data = d %>% subset(other==sprintf("tau[3]==%3.1f",steps[i])), aes(x = x, y = log), col=i, shape=15, size=1)
 }
-pdemp<-p + theme_classic() + 
+plog<-p + theme_classic() + 
   xlab(expression(tau[2])) + ylab('Log-ratio criteria') + coord_cartesian(xlim=c(0,1))  + 
   theme(panel.grid=element_blank(),
         strip.text.y = element_text(size=12, face="bold"),
@@ -1097,7 +1114,7 @@ pscale = pscale +
 plot.new()
 vprincipal <- viewport(width = 1, height = 1, x = 0.5, y = 0.5)
 vscale <- viewport(width = 0.32, height = 0.4, x = 0.8, y = 0.35)
-print(pdemp, vp = vprincipal)
+print(plog, vp = vprincipal)
 print(pscale, vp=vscale)
 @
 }
@@ -1112,18 +1129,61 @@ detach("package:ggtern", unload=TRUE)
 \section{Advantages of using a compositional approach}
 
 \begin{frame}
+
+\begin{columns}
+\frametitle{The advantages of compositional approaches}
+
+\column{0.35\textwidth}
+<<fig.width=4, fig.height=4>>=
+pentropy
+@
+
+\begin{center}$\Downarrow$\end{center}
+
+<<fig.width=4, fig.height=4>>=
+paitchison
+@
+
+\column{0.35\textwidth}
+<<fig.width=4, fig.height=4, results='hold'>>=
+d <- lapply(steps <- c(0.1, 0.3, 0.5), function(other) data.frame(x = seq(0, 1-other, 0.001)) %>% 
+                                                            mutate(demp = ifelse(1-other-x < x & other < x, 1, 0),
+                                                                   other = as.character(other))) %>% bind_rows %>% mutate(
+                                                                     other = factor(other, labels = sprintf("%3.1f",steps)))
+
+p = ggplot() + geom_point(data = d, aes(x = x, y = demp, col=other), shape=15, size=1) + facet_grid(other~.)
+
+p + theme_classic() + 
+  xlab(expression(tau[2])) + ylab('DEMP criteria') + coord_cartesian(xlim=c(0,1))  + 
+  theme(panel.grid=element_blank(),
+        legend.position="none",
+        strip.text.y = element_text(size=12, face="bold"),
+        strip.background = element_rect(colour="black", fill="white"))+ylim(0,1) +
+   scale_colour_manual(values=c(1,2,3))
+@
+
+\begin{center}$\Downarrow$\end{center}
+
+<<fig.width=4, fig.height=4, results='hold'>>=
+plog
+@
+
+\end{columns}
+\end{frame}
+
+\begin{frame}
 \frametitle{Scale invariance}
 
 \begin{columns}
 \column{0.4\textwidth}
 \[ \left[ \begin{array}{ccccc}
-\idea{(}\tau_{11}\idea{,} & \dots & \tau_{1j}\idea{,} & \dots & \tau_{1k}\idea{),} \\
+(\tau_{11}, & \dots & \tau_{1j}, & \dots & \tau_{1k}), \\
 \vdots      & &    \vdots                     & &    \vdots                     \\
-\idea{(}\tau_{i1}\idea{,} & \dots & \tau_{ij}\idea{,} & \dots & \tau_{ik}\idea{),} \\
+(\tau_{i1}, & \dots & \tau_{ij}, & \dots & \tau_{ik}), \\
 \vdots      & &      \vdots                   & &       \vdots                  \\
-\idea{(}\tau_{n1}\idea{,} & \dots & \tau_{nj}\idea{,} & \dots & \tau_{nk}\idea{)}
+(\tau_{n1}, & \dots & \tau_{nj}, & \dots & \tau_{nk})
 \end{array} \right] 
-\idea{ \in \mathcal{S}^k } \]
+\in \mathcal{S}^k \]
 \column{0.3\textwidth}
 \end{columns}
 
@@ -1140,7 +1200,7 @@ detach("package:ggtern", unload=TRUE)
 If we knew that some subcompositions were going to be forming a single cluster, then we could find a parallel hierchical merging sequence inside each subcomposition in parallel without considering the other subcompositions.
 
 \begin{columns}
-\column{0.95\textwidth}
+\column{0.65\textwidth}
 <<fig.width=8.5, fig.height=3>>=
 source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
 
@@ -1150,6 +1210,20 @@ x = lapply(1:20, function(m) rnorm(100, mean = m, sd = 200)) %>% unlist
 hc = hclust(log(stats::dist(x, method="euclidean")), method="ward.D")
 
 A2Rplot(hc, k = 8, boxes = FALSE, col.up = "gray50", main = '', show.labels = F)
+@
+
+\column{0.35\textwidth}
+<<fig.width=4, fig.height=4>>=
+g = cutree(hc, k=8)
+tab = table(g)
+g = rep(names(tab), tab)
+df = expand.grid(1:2000, 1:2000)
+g1 = g[df$Var1]
+g2 = g[df$Var2]
+df$color = ifelse( g1 == g2, g1, 0)
+df = df %>% subset(color != '0')
+ggplot() + geom_point(data=df, aes(x = Var1, y=Var2, col=color, fill=color), size=0.5, shape=15) + 
+  theme_bw() + theme(legend.position="none", panel.grid=element_blank()) + xlab(NULL) + ylab(NULL)
 @
 \end{columns}
 
@@ -1166,6 +1240,35 @@ A2Rplot(hc, k = 8, boxes = FALSE, col.up = "gray50", main = '', show.labels = F)
 \begin{itemize}
 \item The merging approach based on the amalgamation of probabilities (one observation can only be considered from one component). Can we use other forms of merging? Maybe geometrical mean between components? What does this form of merging means?
 \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      \begin{center}
+
+        \font\endfont = cmss10 at 15.40mm
+        
+        \endfont 
+        \baselineskip 15.0mm
+
+        Thank you!!!
+
+      \end{center}    
+
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      \begin{center}
+        \pgfimage[width=\textwidth]{tern.png}          
+      \end{center}
+    \end{column}
+  \end{columns}
+  \bigskip
+    \bigskip
+      \bigskip
+{\small You can get material related with this presentation at \\ http://mcomas.net/CODAWORK2015/}
+
 \end{frame}
 
 \end{document}
