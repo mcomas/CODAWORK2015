@@ -848,7 +848,7 @@ that can be written as
 
 \begin{itemize}
 \item Given the posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \tau_{i3} \right)$.
-\item Remember, the misclassification is given by $\mathbbm{1}\left( \forall j\; \tau_{i I_{b}} \geq \tau_{i I_j} \right)$
+\item In this case, the misclassification is given by $\mathbbm{1}\left( \forall j\; \tau_{i 2} \geq \tau_{i 1} \right)$
 \item For $\tau_3 = 0.1$\uncover<2->{, {\color{red}$\tau_3 = 0.3$}}\uncover<3->{ and {\color{green}$\tau_3 = 0.5$}.}
 \end{itemize}
 
@@ -988,7 +988,7 @@ is minimum.
 
 \begin{itemize}
 \item We've replaced the misclassification measure $\mathbbm{1}\left( \forall j\; \tau_{i I_{b}} \geq \tau_{i I_j} \right)$ by $log(\tau_{i I_b}/\tau_{i I_a})$.
-\item It measures how large is $\tau_{i I_b}$ with respect to $\tau_{i I_b}$.
+\item It measures how large is $\tau_{i I_b}$ with respect to $\tau_{i I_a}$.
 \item A similar measure has been proposed by Longford~\&~Bartosova~(2014) ($\frac{\tau_{i I_b}}{\tau_{i I_a} + \tau_{iI_b}}$).
 \item In contrast to DEMP, it only depends on $I_a$ and $I_b$.
 \end{itemize}
@@ -999,7 +999,7 @@ is minimum.
 \frametitle{The log-ratio as a misclassification measure}
 \begin{itemize}
 \item Given the posterior probability vector $\left( \tau_{i1}, \tau_{i2}, \tau_{i3} \right)$.
-\item Remember, now the misclassification is given by $log\left(\tau_{i I_{b}}/\tau_{i I_{a}} \right)$
+\item Now the misclassification is given by $log\left(\tau_{i 2}/\tau_{i 1} \right)$
 \item For $\tau_3 = 0.1$\uncover<2->{, {\color{red}$\tau_3 = 0.3$}}\uncover<3->{ and {\color{green}$\tau_3 = 0.5$}.}
 \end{itemize}
 \begin{columns}
@@ -1195,14 +1195,14 @@ plog
 \end{frame}
 
 \begin{frame}
-\frametitle{Subcompositional coherence}
+\frametitle{``Subcompositional coherence''}
 
-If we knew that some subcompositions were going to be forming a single cluster, then we could find a parallel hierchical merging sequence inside each subcomposition in parallel without considering the other subcompositions.
+If we knew that some subcompositions are forming a single cluster, then we could find a hierarchy inside each subcomposition independently without considering other subcompositions.
 
 \begin{columns}
 \column{0.65\textwidth}
 <<fig.width=8.5, fig.height=3>>=
-source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
+source("online_code.R")
 
 set.seed(50)
 #rnorm(1000, mean=1, sd=100)
@@ -1253,7 +1253,7 @@ ggplot() + geom_point(data=df, aes(x = Var1, y=Var2, col=color, fill=color), siz
         \endfont 
         \baselineskip 15.0mm
 
-        Thank you!!!
+        Thank you for your attention
 
       \end{center}    
 
